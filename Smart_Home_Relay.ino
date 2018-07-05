@@ -9,8 +9,14 @@
 
 const char* ssid = "";
 const char* password = "";
-byte close_relay[] = {0xA0,0x01,0x01,0xA2,0x0D,0x0A};
-byte open_relay[] = {0xA0,0x01,0x00,0xA1,0x0D,0x0A};
+byte close_relay[] = {0xA0, 0x01, 0x01, 0xA2, 0x0D, 0x0A};
+byte open_relay[] = {0xA0, 0x01, 0x00, 0xA1, 0x0D, 0x0A};
+const char* use_static_up = "yes";
+IPAddress static_address(192, 168, 1, 248);
+IPAddress gateway_ip(192, 168, 1, 1);
+IPAddress subnet_mask(255, 255, 255, 0);
+IPAddress dns_one(8, 8, 8, 8);
+IPAddress dns_two(8, 8, 4, 4);
 
 // Create an instance of the server
 // specify the port to listen on as an argument
@@ -41,6 +47,11 @@ void setup() {
   Serial.println("Server started");
 
   // Print the IP address
+  Serial.println(WiFi.localIP());
+  delay(100);
+  if (use_static_up == "yes") {
+    WiFi.config(static_address, gateway_ip, subnet_mask, dns_one, dns_two);
+  }
   Serial.println(WiFi.localIP());
 }
 
