@@ -11,7 +11,7 @@ const char* ssid = "";
 const char* password = "";
 byte close_relay[] = {0xA0, 0x01, 0x01, 0xA2, 0x0D, 0x0A};
 byte open_relay[] = {0xA0, 0x01, 0x00, 0xA1, 0x0D, 0x0A};
-const char* use_static_up = "yes";
+const char* use_static_up = "no";
 IPAddress static_address(192, 168, 1, 248);
 IPAddress gateway_ip(192, 168, 1, 1);
 IPAddress subnet_mask(255, 255, 255, 0);
