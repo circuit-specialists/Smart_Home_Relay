@@ -18,6 +18,10 @@ IPAddress gateway_ip(192, 168, 1, 1);
 IPAddress subnet_mask(255, 255, 255, 0);
 IPAddress dns_one(8, 8, 8, 8);
 IPAddress dns_two(8, 8, 4, 4);
+const int esp_OTA_port = 8266;
+const char* esp_hostname = "my_esp8266";
+bool use_password = false;
+const char* esp_password = "admin";
 
 // Create an instance of the server with port
 WiFiServer server(80);
@@ -39,11 +43,15 @@ void setup() {
   }
   Serial.println("\nWiFi connected");
 
-  ArduinoOTA.setPort(8266);
-  ArduinoOTA.setHostname("my_esp8266");
-  //ArduinoOTA.setPassword("admin");
-  // MD5 hash
-  //ArduinoOTA.setPasswordHash("456b7016a916a4b178dd72b947c152b7");
+  ArduinoOTA.setPort(esp_OTA_port);
+  ArduinoOTA.setHostname(esp_hostname);
+  if (use_password) {
+    ArduinoOTA.setPassword(esp_password);
+    MD5Builder md5;
+    md5.begin();
+    md5.add(esp_password);
+    ArduinoOTA.setPasswordHash(md5.calculate(););
+  }
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH)
