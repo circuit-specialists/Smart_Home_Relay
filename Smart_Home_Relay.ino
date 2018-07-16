@@ -12,8 +12,6 @@
 
 const char* ssid = "";
 const char* password = "";
-byte close_relay[] = {0xA0, 0x01, 0x01, 0xA2, 0x0D, 0x0A};
-byte open_relay[] = {0xA0, 0x01, 0x00, 0xA1, 0x0D, 0x0A};
 bool use_static_ip = false;
 IPAddress static_address(192, 168, 1, 248);
 IPAddress gateway_ip(192, 168, 1, 1);
@@ -118,23 +116,26 @@ void loop() {
   Serial.println(req);
   client.flush();
 
+  /*********************************************
+                URL Script functions
+  **********************************************/
   // sort http request
   int val;
   String _mode = "";
   if (req.indexOf("/turnon") != -1) {
     val = 0;
-    Serial.write(close_relay, sizeof(close_relay));
+    relay(1);
     _mode = "Relay has been set to the on position\n</html>\n";
   }
   else if (req.indexOf("/turnoff") != -1) {
     val = 1;
-    Serial.write(open_relay, sizeof(open_relay));
+    relay(0);
     _mode = "Relay has been set to the off position\n</html>\n";
   }
   else if (req.indexOf("/garagedoor") != -1) {
-    Serial.write(open_relay, sizeof(open_relay));
-    delay(50);
-    Serial.write(close_relay, sizeof(close_relay));
+    relay(1);
+    delay(180);
+    relay(0);
     _mode = "Garagedoor cycled";
   }
   else {
@@ -153,5 +154,16 @@ void loop() {
 
   // The client will actually be disconnected
   // when the function returns and 'client' object is detroyed
+}
+
+void relay(bool value) {
+  const byte close_relay[] = {0xA0, 0x01, 0x01, 0xA2, 0x0D, 0x0A};
+  const byte open_relay[] = {0xA0, 0x01, 0x00, 0xA1, 0x0D, 0x0A};
+  if (value) {
+    Serial.write(close_relay, sizeof(close_relay));
+  }
+  else {
+    Serial.write(open_relay, sizeof(open_relay));
+  }
 }
 
