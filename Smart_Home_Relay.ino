@@ -25,11 +25,11 @@ IPAddress dns_one(8, 8, 8, 8);
 IPAddress dns_two(8, 8, 4, 4);
 
 const int esp_OTA_port = 8266;
-const char* esp_hostname = "my_esp8266";
+const char* esp_hostname = "esp8266_OTA";
 bool use_password = false;
 const char* esp_password = "admin";
-
-const char* esp_http_update_hostname = "esp8266-webupdate";
+bool use_https = false;
+const char* esp_http_update_hostname = "esp8266";
 const char* update_path = "/firmware";
 const char* update_username = "admin";
 const char* update_password = "admin";
@@ -235,10 +235,10 @@ void setup() {
     ArduinoOTA.setPasswordHash(md5.toString().c_str());
     httpServer.send(200, "text / plain", "Password Set " + (String)esp_password + " hash: " + md5.toString());
   });
+  httpServer.onNotFound(handleNotFound);
   /*********************************************
                END
   **********************************************/
-  httpServer.onNotFound(handleNotFound);
   httpUpdater.setup(&httpServer, update_path, update_username, update_password);
   httpServer.begin();
   MDNS.addService("http", "tcp", 80);
@@ -246,11 +246,13 @@ void setup() {
 
 
   // Start the HTTPS Update Server
-  httpsServer.setServerKeyAndCert_P(rsakey, sizeof(rsakey), x509, sizeof(x509));
-  httpUpdater.setup(&httpsServer, update_path, update_username, update_password);
-  httpsServer.begin();
-  MDNS.addService("https", "tcp", 443);
-  Serial.printf("HTTPSUpdateServer ready!\nOpen https://%s.local%s in your browser and login with username '%s' and password '%s'\n", esp_http_update_hostname, update_path, update_username, update_password);
+  if (use_https) {
+    httpsServer.setServerKeyAndCert_P(rsakey, sizeof(rsakey), x509, sizeof(x509));
+    httpUpdater.setup(&httpsServer, update_path, update_username, update_password);
+    httpsServer.begin();
+    MDNS.addService("https", "tcp", 443);
+    Serial.printf("HTTPSUpdateServer ready!\nOpen https://%s.local%s in your browser and login with username '%s' and password '%s'\n", esp_http_update_hostname, update_path, update_username, update_password);
+  }
 
   // Print the IP address
   Serial.println(WiFi.localIP());
