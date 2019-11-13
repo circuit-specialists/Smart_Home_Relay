@@ -2,8 +2,8 @@
    written by Jake Pring from CircuitSpecialists.com
    licensed as GPLv3
   commands:
-    0xA00100A1 opens relay
-    0xA00101A2 closes relay
+    0xA00100A10D0A opens relay
+    0xA00101A20D0A closes relay
 */
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -14,11 +14,11 @@
 #include <ESP8266WebServerSecure.h>
 #include <ESP8266HTTPUpdateServer.h>
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "circuitspecialists.com";
+const char* password = "C!rCu!t!";
 
 bool use_static_ip = false;
-IPAddress static_address(192, 168, 1, 248);
+IPAddress static_address(192, 168, 1, 253);
 IPAddress gateway_ip(192, 168, 1, 1);
 IPAddress subnet_mask(255, 255, 255, 0);
 IPAddress dns_one(8, 8, 8, 8);
