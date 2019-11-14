@@ -14,8 +14,8 @@
 #include <ESP8266WebServerSecure.h>
 #include <ESP8266HTTPUpdateServer.h>
 
-const char* ssid = "circuitspecialists.com";
-const char* password = "C!rCu!t!";
+const char* ssid = "";
+const char* password = "";
 
 bool use_static_ip = false;
 IPAddress static_address(192, 168, 1, 253);
